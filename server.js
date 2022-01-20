@@ -114,7 +114,7 @@ io.on('connection', async (socket)=>{
     })
 });
     
-let puerto = PORT || 8080;
+let puerto = process.env.PORT || 8080;
 http.listen(puerto, () =>{
     logger.info('Escuchando en el puerto ' + puerto);
 });
