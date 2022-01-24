@@ -6,27 +6,53 @@ document.addEventListener("DOMContentLoaded", function () {
     const email = document.querySelector('#email');
     const envio = document.querySelector('#enviar-msg');
     const tipo = document.querySelector('#tipo');
-    const mensajes = [];
+    let mensajes = [];
+    const chat = document.querySelector("#mailHidden").innerHTML;
+    let hayUsuario = false;
+    let hayMensajes = false;
+
+    if(chat !== 'true'){ hayUsuario = true};
 
     socket.on("mensaje-inicial", (data) => {
-        mensajes.push(data.mensajes);    
-        $('#chat').html('');    
-        data.mensajes.forEach(e =>{
-            $('#chat').append(
-                `<div class="mensaje">
-                    <p class="mensaje-datos"><span class="mensaje-email">${e.message.email}</span> <span class="mensaje-fecha">${e.message.dateStr}</span></p>
-                    <p class="mensaje-texto">${e.message.value}</p>
-                </div>`
-            );
-        });                    
+        if (hayUsuario){
+            const filtro = data.mensajes.filter(mensaje => mensaje.message.email == chat);
+            if (filtro.length > 1){
+                mensajes = filtro;
+                hayMensajes = true;
+            } else {
+                $('#chat').html('No hay mensajes que correspondan al correo ingresado.')
+            }
+        }
+        else {
+            hayMensajes = true;
+            mensajes = data.mensajes;    
+        }
+        if (hayMensajes){
+            $('#chat').html('');    
+            mensajes.forEach(e =>{
+                $('#chat').append(
+                    `<div class="mensaje">
+                        <p class="mensaje-datos"><span class="mensaje-email">${e.message.email}</span> <span class="mensaje-fecha">${e.message.dateStr}</span></p>
+                        <p class="mensaje-texto">${e.message.value}</p>
+                    </div>`
+                );
+            });   
+        }                 
     });
 
     // Recibo el mensajo del servidor y lo renderizo
-    socket.on("actualizar-chat", (data) => {           
-        mensajes[0].push(data);    
+    socket.on("actualizar-chat", (data) => {  
+        console.log(hayUsuario)
+        if (hayUsuario){  
+            if (data.message.email == chat){
+                mensajes.push(data);    
+            }
+        }
+        else {
+            mensajes.push(data);
+        }
         $('#chat').html('');    
-        console.log(mensajes);
-        mensajes[0].forEach(e =>{
+        mensajes.forEach(e =>{
             $('#chat').append(
                 `<div class="mensaje">
                     <p class="mensaje-datos"><span class="mensaje-email">${e.message.email}</span> <span class="mensaje-fecha">${e.message.dateStr}</span></p>
@@ -55,38 +81,5 @@ document.addEventListener("DOMContentLoaded", function () {
             msj.value = "";
         }
     });
-    
-
-    /* Manejar productos */
-    /*
-    socket.on("productos", (data) => {
-        // Reiniciar las clases y el html
-        $('#tabla-productos').removeClass('activar');
-        $('#sin-productos').removeClass('activar');
-        $('#tabla-productos tbody').html('');
-
-        // Activar la vista correspondiente
-        if(data.productos.cantidad > 0){
-            $('#tabla-productos').addClass('activar');
-        }else{
-            $('#sin-productos').addClass('activar');
-        }
-
-        // Renderizar productos
-        $('#cantidad').html(data.productos.cantidad);
-        data.productos.items.forEach(e =>{
-            $('#tabla-productos tbody').append(
-                `<tr>
-                    <td>${e.codigo}</td>
-                    <td>${e.title}</td>
-                    <td>${e.descripcion}</td>
-                    <td>${e.price}</td>
-                    <td>${e.stock}</td>                
-                    <td><img src="${e.thumbnail}" /></td>
-                </tr>`
-            );
-        });        
-    });
-    */
 });
   

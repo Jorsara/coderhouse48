@@ -46,5 +46,6 @@ p.mensaje-datos {
 #email.required {
     border-color: red;
 }
+#mailHidden{display:none;}
 /* Chat */
 #pw-check{display:none;}

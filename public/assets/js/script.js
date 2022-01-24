@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     const socket = io();
-
+    
     /* Chat */
     const msj = document.querySelector("#mensaje");
     const email = document.querySelector('#email');

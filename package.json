@@ -7,8 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "set NODE_ENV=production&& node server.js",
     "watch": "set NODE_ENV=development&& nodemon --quiet server.js",
-    "dev" : "set NODE_ENV=development&& nodemon --quiet server.js",
-    "prod" : "set NODE_ENV=production&& nodemon --quiet server.js"
+    "dev": "set NODE_ENV=development&& nodemon --quiet server.js",
+    "prod": "set NODE_ENV=production&& nodemon --quiet server.js"
   },
   "author": "",
   "license": "ISC",
